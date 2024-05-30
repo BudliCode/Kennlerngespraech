@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * implementiert die Methode distance()
@@ -9,6 +10,7 @@ public class Distance {
 
     /**
      * konvertiert den Graphen von einem Set aus Edges zu einer Map aus Objekten und dazugehörigen Nodes
+     *
      * @param graph Set aus Node Tupeln, zwischen denen Edges verlaufen.
      * @return Map aus den Objekten als Keys, und Nodes als deren Values
      */
@@ -16,13 +18,16 @@ public class Distance {
         Map<Object, Node> nodes = new HashMap<>();
 
         graph.forEach(edge -> {
+            // wenn noch nicht vorhanden werden Nodes erstellt und zur Liste hinzugefügt
             edge.forEach(o -> {
                 if (o != null && !nodes.containsKey(o)) {
                     nodes.put(o, new Node(o));
                 }
             });
 
+            // null Elemente werden entfernt und Objekte zu ihren entsprechenden Nodes konvertiert
             List<Node> edgeOfNodes = edge.stream().filter(Objects::nonNull).map(nodes::get).toList();
+
             edgeOfNodes.forEach(node -> node.addNeighbors(edgeOfNodes));
         });
         return nodes;
@@ -30,14 +35,16 @@ public class Distance {
 
     /**
      * rechnet die Distanz zwischen source und
-     * @param source ist das Objekt, von dem die Suche aus los geht
+     *
+     * @param source      ist das Objekt, von dem die Suche aus los geht
      * @param destination ist das Objekt, nach dem gesucht wird
-     * @param graph Set aus Node Tupeln, zwischen denen Edges verlaufen
+     * @param graph       Set aus Node Tupeln, zwischen denen Edges verlaufen
      * @return Anzahl an Kanten zwischen source und destination, wenn ein weg gefunden wurde. falls kein weg existiert wird -1 zurückgegeben.
      */
     public static int distance(Object source, Object destination, Set<List<Object>> graph) {
         Map<Object, Node> nodes = getNodes(graph);
 
+        // immer Nodes mit der kleinsten Distanz sind vorne.
         Queue<Node> queue = new LinkedList<>();
 
         Node sourceNode = nodes.get(source);
@@ -45,9 +52,14 @@ public class Distance {
         queue.add(sourceNode);
 
         while (!queue.isEmpty()) {
+
+            // node mit kleinster Distanz
             Node node = queue.poll();
             for (Node neighbor : node.neighbors) {
+
+                // wenn der Nachbar noch nicht marked ist, bekommt er eine Distanz, wird gemarkt und zur Queue hinzugefügt
                 if (!neighbor.marked) {
+                    // wenn der Nachbar das Ziel ist, wird eine Distanz zurückgegeben
                     if (neighbor.object == destination) {
                         return node.distance + 1;
                     }
@@ -86,12 +98,14 @@ public class Distance {
 
         /**
          * fügt alle Nodes als Nachbarn hinzu. Null wird ignoriert
+         *
          * @param neighbors die dem Set an neighbors hinzugefügt werden soll
          */
-        public void addNeighbors(List<Node> neighbors){
+        public void addNeighbors(List<Node> neighbors) {
+            // fügt alle Nachbarn zur Liste hinzu, die nicht die eigene Node sind.
             neighbors.forEach(node -> {
-                if (this != node && node != null){
-                    this.neighbors.add(node);
+                if (node != this) {
+                    neighbors.add(node);
                 }
             });
         }
