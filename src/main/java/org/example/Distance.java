@@ -105,7 +105,7 @@ public class Distance {
             // fügt alle Nachbarn zur Liste hinzu, die nicht die eigene Node sind.
             neighbors.forEach(node -> {
                 if (node != this) {
-                    neighbors.add(node);
+                    this.neighbors.add(node);
                 }
             });
         }
