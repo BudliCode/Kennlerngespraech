@@ -16,13 +16,13 @@ public class Distance {
         Map<Object, Node> nodes = new HashMap<>();
 
         graph.forEach(edge -> {
-            edge.forEach(object -> {
-                if (!nodes.containsKey(object)) {
-                    nodes.put(object, new Node(object));
+            edge.forEach(o -> {
+                if (o != null && !nodes.containsKey(o)) {
+                    nodes.put(o, new Node(o));
                 }
             });
 
-            List<Node> edgeOfNodes = edge.stream().map(nodes::get).toList();
+            List<Node> edgeOfNodes = edge.stream().filter(Objects::nonNull).map(nodes::get).toList();
             edgeOfNodes.forEach(node -> node.addNeighbors(edgeOfNodes));
         });
         return nodes;
@@ -59,10 +59,22 @@ public class Distance {
         return -1;
     }
 
+    /**
+     * Node :)
+     */
     private static class Node {
         final Object object;
+        /**
+         * alle erreichbaren Nachbar nodes
+         */
         Set<Node> neighbors;
+        /**
+         * Distanz zur source Node
+         */
         int distance;
+        /**
+         * wenn marked, ist die Distanz garantiert richtig.
+         */
         boolean marked;
 
         public Node(Object object) {
@@ -71,9 +83,13 @@ public class Distance {
             marked = false;
         }
 
+        /**
+         * fügt alle Nodes als Nachbarn hinzu. Null wird ignoriert
+         * @param neighbors die dem Set an neighbors hinzugefügt werden soll
+         */
         public void addNeighbors(List<Node> neighbors){
             neighbors.forEach(node -> {
-                if (this != node){
+                if (this != node && node != null){
                     this.neighbors.add(node);
                 }
             });
