@@ -16,6 +16,7 @@ public class Distance {
      */
     private static Map<Object, Node> getNodes(Set<List<Object>> graph) {
         Map<Object, Node> nodes = new HashMap<>();
+        graph = graph.stream().filter(Objects::nonNull).collect(Collectors.toSet());
 
         graph.forEach(edge -> {
             // wenn noch nicht vorhanden werden Nodes erstellt und zur Liste hinzugefügt
@@ -34,7 +35,7 @@ public class Distance {
     }
 
     /**
-     * rechnet die Distanz zwischen source und
+     * rechnet die Distanz zwischen source und destination
      *
      * @param source      ist das Objekt, von dem die Suche aus los geht
      * @param destination ist das Objekt, nach dem gesucht wird
@@ -46,6 +47,12 @@ public class Distance {
 
         // immer Nodes mit der kleinsten Distanz sind vorne.
         Queue<Node> queue = new LinkedList<>();
+
+        if (!nodes.containsKey(source)) {
+            throw new ObjektDoesNotExistInGraphException("incorrect source: " + source);
+        } else if (!nodes.containsKey(destination)) {
+            throw new ObjektDoesNotExistInGraphException("incorrect destination: " + destination);
+        }
 
         Node sourceNode = nodes.get(source);
         sourceNode.distance = 0;
