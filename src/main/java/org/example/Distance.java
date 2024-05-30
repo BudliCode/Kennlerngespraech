@@ -3,7 +3,31 @@ package org.example;
 import java.util.*;
 
 public class Distance {
+
+    private static Map<Object, Set<Object>> getNodes(Set<List<Object>> graph) {
+        Map<Object, Set<Object>> nodes = new HashMap<>();
+
+        graph.forEach(edge -> {
+            edge.forEach(object -> {
+                if (!nodes.containsKey(object)) {
+                    nodes.put(object, new HashSet<>());
+                }
+            });
+
+            edge.forEach(node -> {
+                edge.forEach(otherNode -> {
+                    if (edge != otherNode) {
+                        nodes.get(node).add(otherNode);
+                    }
+                });
+            });
+        });
+        return nodes;
+    }
+
     public static int distance(Object sourceObj, Object destinationObj, Set<List<Object>> graphList) {
+        Map<Object, Set<Object>> nodes = getNodes(graphList);
+
         Graph graph = new Graph(graphList);
         int[] distance = new int[graph.size()];
         Arrays.fill(distance, -1);
@@ -18,12 +42,12 @@ public class Distance {
         distance[source.getId()] = 0;
         marked[source.getId()] = true;
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Knoten knoten = queue.poll();
-            for (Knoten nachbar : knoten.getNachbarn()){
+            for (Knoten nachbar : knoten.getNachbarn()) {
                 int nachbarId = nachbar.getId();
-                if (!marked[nachbarId]){
-                    if (nachbar == destination){
+                if (!marked[nachbarId]) {
+                    if (nachbar == destination) {
                         return distance[knoten.getId()] + 1;
                     }
                     distance[nachbarId] = distance[knoten.getId()] + 1;
@@ -31,8 +55,6 @@ public class Distance {
                     queue.add(nachbar);
                 }
             }
-
-
         }
         return -1;
     }

@@ -7,9 +7,11 @@ public class Graph {
     public int size(){
         return knoten.size();
     }
+
     public Collection<Knoten> getAllKnoten(){
         return knoten.values();
     }
+
     public Knoten getKnoten(Object object) {
         return knoten.get(object);
     }
