@@ -58,7 +58,9 @@ class DistanceTest {
 
     @Test
     void wegExistiertNicht(){
-
+        addEdge(0,1);
+        addEdge(2,3);
+        assertEquals(-1, distance(0, 3));
     }
 
     @Test
