@@ -52,6 +52,7 @@ public class Distance {
                         return node.distance + 1;
                     }
                     neighbor.distance = node.distance + 1;
+                    neighbor.marked = true;
                     queue.add(neighbor);
                 }
             }
