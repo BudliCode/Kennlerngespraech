@@ -3,10 +3,6 @@ package org.example;
 import java.util.*;
 
 public class Main {
-
-
-
-
     public static void main(String[] args) {
 
         Object a = new Object();
@@ -61,10 +57,5 @@ public class Main {
         graph.add(bd);
 
         System.out.println(Distance.distance(c , d, graph));
-
-
-
     }
-
-
 }

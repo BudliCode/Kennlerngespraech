@@ -25,34 +25,23 @@ public class Distance {
         return nodes;
     }
 
-    public static int distance(Object sourceObj, Object destinationObj, Set<List<Object>> graphList) {
+    public static int distance(Object source, Object destination, Set<List<Object>> graphList) {
         Map<Object, Set<Object>> nodes = getNodes(graphList);
+        Map<Object, Integer> distance = new HashMap<>();
 
-        Graph graph = new Graph(graphList);
-        int[] distance = new int[graph.size()];
-        Arrays.fill(distance, -1);
-        boolean[] marked = new boolean[graph.size()];
-        Arrays.fill(marked, false);
-
-        Knoten source = graph.getKnoten(sourceObj);
-        Knoten destination = graph.getKnoten(destinationObj);
-
-        Queue<Knoten> queue = new LinkedList<>();
+        Queue<Object> queue = new LinkedList<>();
         queue.add(source);
-        distance[source.getId()] = 0;
-        marked[source.getId()] = true;
+        distance.put(source, 0);
 
         while (!queue.isEmpty()) {
-            Knoten knoten = queue.poll();
-            for (Knoten nachbar : knoten.getNachbarn()) {
-                int nachbarId = nachbar.getId();
-                if (!marked[nachbarId]) {
-                    if (nachbar == destination) {
-                        return distance[knoten.getId()] + 1;
+            Object node = queue.poll();
+            for (Object neighbor : nodes.get(node)) {
+                if (!distance.containsKey(neighbor)) {
+                    if (neighbor == destination) {
+                        return distance.get(node) + 1;
                     }
-                    distance[nachbarId] = distance[knoten.getId()] + 1;
-                    marked[nachbarId] = true;
-                    queue.add(nachbar);
+                    distance.put(neighbor, distance.get(node) + 1);
+                    queue.add(neighbor);
                 }
             }
         }
